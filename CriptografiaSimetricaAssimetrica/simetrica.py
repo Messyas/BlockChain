@@ -1,20 +1,30 @@
 from Crypto.Cipher import AES
 from Crypto.Random import get_random_bytes
+from Crypto.Util.Padding import pad, unpad
 
-def pad(texto):
-    """Adiciona padding ao texto para que seu tamanho seja múltiplo de 16 bytes."""
-    while len(texto) % 16 != 0:
-        texto += ' '
-    return texto
-
-def cifrar_aes(texto, chave):
-    """Cifra o texto usando AES com a chave fornecida."""
+def cifrar(texto, chave):
+    """Cifra usando AES com padding PKCS#7."""
     cipher = AES.new(chave, AES.MODE_ECB)
-    texto_padded = pad(texto)
-    return cipher.encrypt(texto_padded.encode('utf-8'))
+    texto_bytes = texto.encode('utf-8')
+    texto_padded = pad(texto_bytes, AES.block_size)
+    return cipher.encrypt(texto_padded)
 
-def decifrar_aes(texto_cifrado, chave):
-    """Decifra o texto cifrado usando AES com a chave fornecida."""
+def decifrar(texto_cifrado, chave):
+    """Decifra usando AES"""
     cipher = AES.new(chave, AES.MODE_ECB)
-    texto_decifrado = cipher.decrypt(texto_cifrado).decode('utf-8')
-    return texto_decifrado.rstrip()
+    texto_padded_decifrado = cipher.decrypt(texto_cifrado)
+    texto_original_bytes = unpad(texto_padded_decifrado, AES.block_size)
+    return texto_original_bytes.decode('utf-8')
+
+if __name__ == "__main__":
+    chave = get_random_bytes(16)  
+    texto = "é medo ou coragem, que te motiva ser de carne?"
+    print(f"Texto original: {texto}")
+    
+    # Cifragem
+    texto_cifrado = cifrar(texto, chave)
+    print(f"Texto cifrado: {texto_cifrado.hex()}")
+    
+    # Decifragem
+    texto_decifrado = decifrar(texto_cifrado, chave)
+    print(f"Texto decifrado: {texto_decifrado}")
