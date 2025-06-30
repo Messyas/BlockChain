@@ -14,3 +14,9 @@ def cifrar(texto, chave_publica):
     cipher = PKCS1_OAEP.new(rsa_chave_publica)
     texto_cifrado = cipher.encrypt(texto.encode())
     return texto_cifrado
+def decifrar(texto_cifrado, chave_privada):
+    """Decifra um texto cifrado usando a chave privada RSA."""
+    rsa_chave_privada = RSA.import_key(chave_privada)
+    cipher = PKCS1_OAEP.new(rsa_chave_privada)
+    texto_decifrado = cipher.decrypt(texto_cifrado)
+    return texto_decifrado.decode()
