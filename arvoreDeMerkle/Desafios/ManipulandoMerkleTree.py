@@ -1,8 +1,6 @@
 import hashlib
 from typing import List, Optional
 
-from arvoreDeMerkle.ExMerkleTree import hash_dado
-
 def gen_hash(dado: str) -> str:
     return hashlib.sha256(dado.encode('utf-8')).hexdigest()
 
@@ -48,10 +46,10 @@ class MerkleTree:
 
 def simular_modificacao(dados: List[str]) -> bool:
     while True:
-        resposta = input("Deseja simular uma modificação em um bloco? (s/n): ").lower()
+        resposta = input("Deseja modidficar um bloco? (s/n): ").lower()
         if resposta in ["s", "n"]:
             break
-        print("Resposta inválida. Por favor, digite 's' para sim ou 'n' para não.")
+        print("Resposta inválida")
     
     if resposta == 'n':
         return False
